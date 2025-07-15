@@ -1,38 +1,116 @@
-# HobuyWidget Integration Documentation
+## Integration Documentation
 
-## [Example](https://front1wss.github.io/hobuy-widget-build/)
+### [Example](https://front1wss.github.io/hobuy-widget-build/)
 
-## Overview
+### Widget Props
 
-HobuyWidget is an auction widget that allows customers to participate in product auctions directly on your website. The widget handles the entire auction flow from initiation to completion.
+| Prop           | Type         | Required | Description                                                               |
+|----------------|--------------|----------|---------------------------------------------------------------------------|
+| locale         | 'en' or 'uk' | No       | Locale of widget translates. Default is 'en'                                | Yes                                                                         | Widget language/locale (e.g., 'en', 'uk').                                  |
+| product        | object       | Yes      | Product object. See below for required fields.                            |
+| shopCurrency   | string       | Yes      | Currency code (e.g., 'UAH', 'USD').                                       |
+| customerName   | string       | No       | Customer's name.                                                          |
+| onStartAuction | function     | Yes      | Callback triggered to start auction. Receives cart and customerName.      |
+| onUseWinData   | function     | Yes      | Callback triggered with win data and an object with handleClearAuctionCart. |
 
-## Installation
+#### Product Object Fields
 
-### CDN
-```html
-<script async src="https://cdn.jsdelivr.net/gh/front1wss/hobuy-widget-build@main/dist/widget.js"></script>
+| Field    | Type          | Required | Description                                                   |
+|----------|---------------|----------|---------------------------------------------------------------|
+| id       | string/number | Yes      | Product ID.                                                   |
+| imageUrl | string        | Yes      | Product image URL.                                            |
+| name     | string        | Yes      | Product name.                                                 |
+| price    | number        | Yes      | Product price (calculate in pennies before passing as props). |
+
+### Usage Example (React)
+
+```jsx
+import 'hobuy-widget/dist/styles.css';
+import HobuyWidget from 'hobuy-widget';
+
+const YourComponent = () => {
+  return (
+    <HobuyWidget
+      locale={'en' || 'uk'}
+      product={{
+        id: 10226342363466,
+        imageUrl: 'https://via.placeholder.com/600/771796',
+        name: 'Gift Card',
+        price: 10,
+      }}
+      shopCurrency={'UAH'}
+      customerName={'John Doe'}
+      onStartAuction={handleStartAuction} // Example bellow
+      onUseWinData={handleUseWinData} // Example bellow
+    />
+  );
+};
+
+export default YourComponent;
 ```
 
-### NPM
-Add this to your `package.json`:
+### Usage Example (CDN)
 
-```json
-{
-  "dependencies": {
-    "hobuy-widget": "git+https://github.com/front1wss/hobuy-widget-build#main"
+```js
+window.addEventListener('load', () => {
+  window.HobuyWidget.init({
+    locale: 'en',
+    product: {
+      id: 10226342363466,
+      imageUrl: 'https://via.placeholder.com/600/771796',
+      name: 'Gift Card',
+      price: 10,
+    },
+    shopCurrency: 'UAH',
+    customerName: 'John Doe',
+    onStartAuction: handleStartAuction,  // Example bellow
+    onUseWinData: handleUseWinData,  // Example bellow
+  });
+});
+```
+
+### Callbacks
+
+#### onStartAuction
+
+- **Type:** `(product: Product, customerName?: string) => Promise<{ socketUrl: string }>`
+- **Description:**
+  Triggered when the user initiates an auction. This async function should handle any required logic (e.g., authentication, product validation, or backend communication) and return an object containing the `socketUrl` for the auction websocket
+  connection.
+- **Arguments:**
+    - `product`: The product object for which the auction is being started.
+    - `customerName` (optional): The name of the customer starting the auction.
+- **Returns:**
+    - `{ socketUrl: string }`: The websocket URL for auction communication.
+- **Example:**
+
+```js
+const handleStartAuction = async (product, customerName) => {
+  // Some async operations...
+  return {
+    socketUrl: 'ws://...',
+  };
+};
+```
+
+### onUseWinData
+
+- **Type:** `(data: WinData, { handleClearAuctionCart }: { handleClearAuctionCart: () => void }) => void`
+- **Description:** Triggered when the user wins an auction. This function handle the win data and perform any necessary actions, such as clearing the auction cart.
+-
+    - **Arguments:**
+- `data`: The data object containing information about the auction win.
+- `handlers:` - An object containing the `handleClearAuctionCart` function to clear the auction cart.
+
+```js
+const handleUseWinData = async (data, handlers) => {
+  const { handleClearAuctionCart } = handlers;
+  // Some async operations...
+  if (success) {
+    handleClearAuctionCart();
+    // Logic...
+  } else {
+    // Another logic...
   }
-}
-```
-
-Run:
-```bash
-npm install
-```
-Or:
-```bash
-pnpm install
-```
-Or:
-```bash
-yarn install
+};
 ```
