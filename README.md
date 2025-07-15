@@ -4,14 +4,14 @@
 
 ### Widget Props
 
-| Prop           | Type         | Required | Description                                                               |
-|----------------|--------------|----------|---------------------------------------------------------------------------|
-| locale         | 'en' or 'uk' | No       | Locale of widget translates. Default is 'en'                                | Yes                                                                         | Widget language/locale (e.g., 'en', 'uk').                                  |
-| product        | object       | Yes      | Product object. See below for required fields.                            |
-| shopCurrency   | string       | Yes      | Currency code (e.g., 'UAH', 'USD').                                       |
-| customerName   | string       | No       | Customer's name.                                                          |
-| onStartAuction | function     | Yes      | Callback triggered to start auction. Receives cart and customerName.      |
-| onUseWinData   | function     | Yes      | Callback triggered with win data and an object with handleClearAuctionCart. |
+| Prop           | Type     | Required | Description                                                                 |
+|----------------|----------|----------|-----------------------------------------------------------------------------|
+| locale         | en \| uk | No       | Locale of widget translates. Default is 'en'                                | Yes                                                                         | Widget language/locale (e.g., 'en', 'uk').                                  |
+| product        | object   | Yes      | Product object. See below for required fields.                              |
+| shopCurrency   | string   | Yes      | Currency code (e.g., 'UAH', 'USD').                                         |
+| customerName   | string   | No       | Customer's name.                                                            |
+| onStartAuction | function | Yes      | Callback triggered to start auction. Receives cart and customerName.        |
+| onUseWinData   | function | Yes      | Callback triggered with win data and an object with handleClearAuctionCart. |
 
 #### Product Object Fields
 
