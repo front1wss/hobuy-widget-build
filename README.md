@@ -1,3 +1,5 @@
+[← Go Back](../README.md)
+
 ## Integration Documentation
 
 ### [Example](https://front1wss.github.io/hobuy-widget-build/)
@@ -23,6 +25,36 @@
 | price    | number        | Yes      | Product price (calculate in pennies before passing as props). |
 
 ### Usage Example (React)
+
+Firstly, add the package manually in your project to package.json:
+
+```json
+{
+  "dependencies": {
+    "hobuy-widget": "git+https://github.com/front1wss/hobuy-widget-build#main"
+  }
+}
+```
+
+Then, install the package using your package manager:
+
+```bash
+  npm install
+```
+
+or
+
+```bash
+  pnpm install
+```
+
+or
+
+```bash
+  yarn install
+```
+
+Then, you can use the widget in your React component:
 
 ```jsx
 import 'hobuy-widget/dist/styles.css';
