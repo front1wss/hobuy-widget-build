@@ -1,21 +1,18 @@
-[← Go Back](../README.md)
-
 ## Integration Documentation
 
-### [Example](https://front1wss.github.io/hobuy-widget-build/)
+### WidgetProps
 
-### Widget Props
+| Prop           | Type          | Required | Description                                                                                    |
+|----------------|---------------|----------|------------------------------------------------------------------------------------------------|
+| locale         | en \| uk      | No       | Locale of widget translates. Default is 'en'                                                   |
+| translates     | object        | No       | Custom translates, will be set to i18n configuration and rewrite translates for current locale |
+| product        | ProductObject | Yes      | Product object. See below for required fields.                                                 |
+| shopCurrency   | string        | Yes      | Currency code (e.g., 'UAH', 'USD').                                                            |
+| customerName   | string        | No       | Customer's name.                                                                               |
+| onStartAuction | function      | Yes      | Callback triggered to start auction. Receives cart and customerName.                           |
+| onUseWinData   | function      | Yes      | Callback triggered with win data and an object with handleClearAuctionCart.                    |
 
-| Prop           | Type     | Required | Description                                                                 |
-|----------------|----------|----------|-----------------------------------------------------------------------------|
-| locale         | en \| uk | No       | Locale of widget translates. Default is 'en'                                | Yes                                                                         | Widget language/locale (e.g., 'en', 'uk').                                  |
-| product        | object   | Yes      | Product object. See below for required fields.                              |
-| shopCurrency   | string   | Yes      | Currency code (e.g., 'UAH', 'USD').                                         |
-| customerName   | string   | No       | Customer's name.                                                            |
-| onStartAuction | function | Yes      | Callback triggered to start auction. Receives cart and customerName.        |
-| onUseWinData   | function | Yes      | Callback triggered with win data and an object with handleClearAuctionCart. |
-
-#### Product Object Fields
+#### ProductObject
 
 | Field    | Type          | Required | Description                                                   |
 |----------|---------------|----------|---------------------------------------------------------------|
@@ -64,6 +61,10 @@ const YourComponent = () => {
   return (
     <HobuyWidget
       locale={'en' || 'uk'}
+      translates={{
+        'cart.title': 'Auction cart',
+        // ...
+      }}
       product={{
         id: 10226342363466,
         imageUrl: 'https://via.placeholder.com/600/771796',
@@ -83,22 +84,41 @@ export default YourComponent;
 
 ### Usage Example (CDN)
 
-```js
-window.addEventListener('load', () => {
-  window.HobuyWidget.init({
-    locale: 'en',
-    product: {
-      id: 10226342363466,
-      imageUrl: 'https://via.placeholder.com/600/771796',
-      name: 'Gift Card',
-      price: 10,
-    },
-    shopCurrency: 'UAH',
-    customerName: 'John Doe',
-    onStartAuction: handleStartAuction,  // Example bellow
-    onUseWinData: handleUseWinData,  // Example bellow
+To initialize the widget in a non-React environment, you can use the CDN version of the widget. This allows you to include the widget in any HTML file without needing to install it via npm or yarn.
+
+#### Methods (CDN)
+
+| Prop         | Type                                             | Description                                                                                                                     |
+|--------------|--------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| init         | (options: WidgetProps) => void                   | Initializes and renders the widget.                                                                                             |
+| destroy      | () => void                                       | Removes the widget from the page, cleaning up all DOM elements and styles.                                                      |
+| changeLocale | (newLocale: string, translates?: object) => void | Changes the widget's locale and optionally updates translations. Re-initializes the widget with the new locale and translations |
+
+```html
+
+<script async src="https://cdn.jsdelivr.net/gh/front1wss/hobuy-widget-build@main/dist/widget.js"></script>;
+
+<script>
+  window.addEventListener('load', () => {
+    window.HobuyWidget.init({
+      locale: 'en',
+      translates: {
+        'cart.title': 'Auction cart',
+        // ...
+      },
+      product: {
+        id: 10226342363466,
+        imageUrl: 'https://via.placeholder.com/600/771796',
+        name: 'Gift Card',
+        price: 10,
+      },
+      shopCurrency: 'UAH',
+      customerName: 'John Doe',
+      onStartAuction: handleStartAuction,  // Example bellow
+      onUseWinData: handleUseWinData,  // Example bellow
+    });
   });
-});
+</script>;
 ```
 
 ### Callbacks
