@@ -1,6 +1,6 @@
 {
   "name": "hobuy-widget",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "style": "dist/styles.css",
