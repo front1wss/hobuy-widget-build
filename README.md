@@ -5,15 +5,18 @@
 
 ### WidgetProps
 
-| Prop           | Type          | Required | Description                                                                                    |
-|----------------|---------------|----------|------------------------------------------------------------------------------------------------|
-| locale         | en \| uk      | No       | Locale of widget translates. Default is 'en'                                                   |
-| translates     | object        | No       | Custom translates, will be set to i18n configuration and rewrite translates for current locale |
-| product        | ProductObject | Yes      | Product object. See below for required fields.                                                 |
-| shopCurrency   | string        | Yes      | Currency code (e.g., 'UAH', 'USD').                                                            |
-| customerName   | string        | No       | Customer's name.                                                                               |
-| onStartAuction | function      | Yes      | Callback triggered to start auction. Receives cart and customerName.                           |
-| onUseWinData   | function      | Yes      | Callback triggered with win data and an object with handleClearAuctionCart.                    |
+| Prop                    | Type          | Required | Description                                                                                    |
+|-------------------------|---------------|----------|------------------------------------------------------------------------------------------------|
+| locale                  | en \| uk      | No       | Locale of widget translates. Default is 'en'                                                   |
+| translates              | object        | No       | Custom translates, will be set to i18n configuration and rewrite translates for current locale |
+| product                 | ProductObject | Yes      | Product object. See below for required fields.                                                 |
+| shopCurrency            | string        | Yes      | Currency code (e.g., 'UAH', 'USD').                                                            |
+| customerName            | string        | No       | Customer's name.                                                                               |
+| hasProductForAuction    | boolean       | Yes      | Show/Hide button adding product/variation in auction                                           |
+| discountLifetimeMinutes | number        | Yes      | Discount duration in minutes                                                                   |
+| maxCartItems            | number        | Yes      | Maximum quantity of items in auction cart                                                      |
+| onStartAuction          | function      | Yes      | Callback triggered to start auction. Receives cart and customerName.                           |
+| onUseWinData            | function      | Yes      | Callback triggered with win data and an object with handleClearAuctionCart.                    |
 
 #### ProductObject
 
@@ -63,6 +66,9 @@ import HobuyWidget from 'hobuy-widget';
 const YourComponent = () => {
   return (
     <HobuyWidget
+      hasProductForAuction={true}
+      discountLifetimeMinutes={15}
+      maxCartItems={5}
       locale={'en' || 'uk'}
       translates={{
         'cart.title': 'Auction cart',
@@ -104,6 +110,9 @@ To initialize the widget in a non-React environment, you can use the CDN version
 <script>
   window.addEventListener('load', () => {
     window.HobuyWidget.init({
+      hasProductForAuction: true,
+      discountLifetimeMinutes: 15,
+      maxCartItems: 5,
       locale: 'en',
       translates: {
         'cart.title': 'Auction cart',
@@ -150,16 +159,16 @@ const handleStartAuction = async (product, customerName) => {
 
 ### onUseWinData
 
-- **Type:** `(data: WinData, { handleClearAuctionCart }: { handleClearAuctionCart: () => void }) => void`
+- **Type:** `(data: WinData, { cart, handleClearAuctionCart }: { cart: IProduct[]; handleClearAuctionCart: () => void }) => void`
 - **Description:** Triggered when the user wins an auction. This function handle the win data and perform any necessary actions, such as clearing the auction cart.
 -
     - **Arguments:**
 - `data`: The data object containing information about the auction win.
-- `handlers:` - An object containing the `handleClearAuctionCart` function to clear the auction cart.
+- `handlers:` - An object containing the `handleClearAuctionCart` function to clear the auction cart and the current `cart` state.
 
 ```js
-const handleUseWinData = async (data, handlers) => {
-  const { handleClearAuctionCart } = handlers;
+const handleUseWinData = async (data, cartState) => {
+  const { cart, handleClearAuctionCart } = cartState;
   // Some async operations...
   if (success) {
     handleClearAuctionCart();
